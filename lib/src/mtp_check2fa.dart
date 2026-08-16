@@ -1,0 +1,107 @@
+part of 'mtp.dart';
+
+Future<InputCheckPasswordSRP> check2FA(
+  AccountPassword accountPassword,
+  String password,
+) async {
+  final currentAlgo = accountPassword.currentAlgo;
+  final newAlgo = accountPassword.newAlgo;
+
+  final algo = currentAlgo != null &&
+          currentAlgo
+              is PasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow
+      ? currentAlgo
+      : newAlgo
+          as PasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow;
+
+  final salt1 = [...algo.salt1];
+  final salt2 = [...algo.salt2];
+
+  final g = BigInt.from(algo.g);
+  final p = _bigEndianInteger(algo.p);
+
+  _checkGoodPrime(p, algo.g);
+  final passwordBytes = utf8.encode(password);
+
+  final x1 = [...salt1, ...passwordBytes, ...salt1];
+  final hash0 = sha256(x1);
+  final x2 = [...salt2, ...hash0.take(32), ...salt2];
+  final hash = sha256(x2);
+
+  final pbkdf2Alg = cryptography.Pbkdf2(
+    macAlgorithm: cryptography.Hmac.sha512(),
+    iterations: 100000,
+    bits: 512, // 64 bytes
+  );
+
+  final secret = cryptography.SecretKey(hash); // Uint8List
+  final derived = await pbkdf2Alg.deriveKey(
+    secretKey: secret,
+    nonce: salt1, // salt
+  );
+
+  final pbkdf2 = await derived.extractBytes(); // 64 bytes
+
+  final x3 = [...salt2, ...pbkdf2.take(64), ...salt2];
+  final x = _bigEndianInteger(sha256(x3));
+  final v = g.modPow(x, p);
+
+  // If we're computing a new password
+  if (accountPassword.currentAlgo == null) {
+    return InputCheckPasswordSRP(
+      a: v.to256Bytes(),
+      srpId: 0,
+      m1: Uint8List(0),
+    );
+  }
+
+  final gB = _bigEndianInteger(accountPassword.srpB!);
+  final gB256 = gB.to256Bytes();
+  final g_256 = g.to256Bytes();
+
+  final kh = sha256([...algo.p.take(256), ...g_256.take(256)]);
+  final k = _bigEndianInteger(kh);
+  final kV = (k * v) % p;
+
+  final a = _bigEndianInteger(Int256.random().data);
+  final gA = g.modPow(a, p);
+  final gA256 = gA.to256Bytes();
+
+  final uux = sha256([...gA256, ...gB256]);
+  final u = _bigEndianInteger(uux);
+
+  var t = (gB - kV) % p;
+
+  // Positive modulo, if the result is negative increment by p.
+  if (t.sign < 0) {
+    t += p;
+  }
+
+  final sA = t.modPow(a + u * x, p);
+  final kA = sha256(sA.to256Bytes());
+
+  final phash = sha256(algo.p);
+  final h2 = sha256(g_256);
+  for (int i = 0; i < 32; i++) {
+    phash[i] ^= h2[i];
+  }
+  final hs1 = sha256(salt1);
+  final hs2 = sha256(salt2);
+
+  final xf = [
+    ...phash.take(32),
+    ...hs1.take(32),
+    ...hs2.take(32),
+    ...gA256,
+    ...gB256,
+    ...kA.take(32),
+  ];
+
+  final m1 = sha256(xf);
+
+  return InputCheckPasswordSRP(
+    a: gA256,
+    m1: Uint8List.fromList(m1),
+    srpId: accountPassword.srpId!,
+  );
+}

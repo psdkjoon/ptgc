@@ -1,0 +1,23 @@
+name: ptgc
+description: >-
+  A high-level client for the Telegram Client API (MTProto). Log in as a
+  real user account and control chats and channels — ban, kick, restrict,
+  promote, invite and list members — plus contacts, dialogs, and messaging.
+version: 1.0.0
+homepage: https://github.com/psdkjoon/ptgc
+repository: https://github.com/psdkjoon/ptgc
+issue_tracker: https://github.com/psdkjoon/ptgc/issues
+topics:
+  - telegram
+  - mtproto
+  - userbot
+  - api
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  penv: ^1.0.0
+  archive: ^4.0.7
+  pointycastle: ^4.0.0
+  cryptography: ^2.7.0
