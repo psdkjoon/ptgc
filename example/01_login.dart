@@ -51,8 +51,9 @@ Future<void> main() async {
       case SignInStatus.passwordRequired:
         // This account has Two-Factor Authentication enabled — the code
         // alone isn't enough.
-        if (result.passwordHint != null)
+        if (result.passwordHint != null) {
           print('Password hint: ${result.passwordHint}');
+        }
         stdout.write('2FA password: ');
         final password = stdin.readLineSync()!.trim();
         final user = await client.auth.checkPassword(password);

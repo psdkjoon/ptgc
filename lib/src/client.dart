@@ -235,8 +235,9 @@ class TelegramClient {
     final byId = <int, DataCenter>{};
     for (final option in config.dcOptions) {
       if (option is! t.DcOption) continue;
-      if (option.ipv6 || option.mediaOnly || option.cdn || option.tcpoOnly)
+      if (option.ipv6 || option.mediaOnly || option.cdn || option.tcpoOnly) {
         continue;
+      }
       // Prefer the first (primary) address seen for each DC id.
       byId.putIfAbsent(
         option.id,

@@ -69,8 +69,9 @@ class PeerCache {
         if (u.accessHash != null) _userAccessHash[id] = u.accessHash!;
         if (u.username != null) _usernameToId[u.username!.toLowerCase()] = id;
         for (final entry in u.usernames ?? const <t.UsernameBase>[]) {
-          if (entry is t.Username)
+          if (entry is t.Username) {
             _usernameToId[entry.username.toLowerCase()] = id;
+          }
         }
       }
     }
@@ -81,8 +82,9 @@ class PeerCache {
         if (c.accessHash != null) _channelAccessHash[id] = c.accessHash!;
         if (c.username != null) _usernameToId[c.username!.toLowerCase()] = id;
         for (final entry in c.usernames ?? const <t.UsernameBase>[]) {
-          if (entry is t.Username)
+          if (entry is t.Username) {
             _usernameToId[entry.username.toLowerCase()] = id;
+          }
         }
       }
     }

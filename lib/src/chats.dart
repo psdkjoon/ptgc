@@ -215,8 +215,9 @@ class Chats {
       () => _client.raw.channels
           .joinChannel(channel: _client.peers.inputChannel(chatId)),
     );
-    if (result is t.MessagesChatInviteJoinResultOk)
+    if (result is t.MessagesChatInviteJoinResultOk) {
       _extractNewChatId(result.updates);
+    }
   }
 
   /// Joins a private chat via an invite link or its bare hash (the part
@@ -226,8 +227,9 @@ class Chats {
     final result = await _client.callRaw<t.MessagesChatInviteJoinResultBase>(
       () => _client.raw.messages.importChatInvite(hash: hash),
     );
-    if (result is t.MessagesChatInviteJoinResultOk)
+    if (result is t.MessagesChatInviteJoinResultOk) {
       _extractNewChatId(result.updates);
+    }
   }
 
   String _inviteHash(String linkOrHash) {

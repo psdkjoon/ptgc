@@ -41,8 +41,9 @@ Future<void> main() async {
   }
 
   print('${chat.title} (${chat.kind}) — id: ${chat.id}');
-  if (chat.participantsCount != null)
+  if (chat.participantsCount != null) {
     print('${chat.participantsCount} members');
+  }
   if (chat.isCreator) print('You created this chat.');
   if (chat.adminRights != null) print('You are an admin here.');
 
