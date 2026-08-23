@@ -33,14 +33,20 @@ class PtgcSession {
     int? userId,
   }) {
     return PtgcSession(
-        dcId: dcId, authorizationKeyJson: key.toJson(), userId: userId);
+      dcId: dcId,
+      authorizationKeyJson: key.toJson(),
+      userId: userId,
+    );
   }
 
   tg.AuthorizationKey toAuthorizationKey() =>
       tg.AuthorizationKey.fromJson(authorizationKeyJson);
 
-  PtgcSession copyWith(
-      {int? dcId, Map<String, dynamic>? authorizationKeyJson, int? userId}) {
+  PtgcSession copyWith({
+    int? dcId,
+    Map<String, dynamic>? authorizationKeyJson,
+    int? userId,
+  }) {
     return PtgcSession(
       dcId: dcId ?? this.dcId,
       authorizationKeyJson: authorizationKeyJson ?? this.authorizationKeyJson,

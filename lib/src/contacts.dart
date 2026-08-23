@@ -44,7 +44,7 @@ class Contacts {
     if (found is! t.ContactsFound) return const [];
     _client.peers.feed(users: found.users, chats: found.chats);
     final byId = {
-      for (final u in found.users) idOfUser(u): PtgcUser.fromRaw(u)
+      for (final u in found.users) idOfUser(u): PtgcUser.fromRaw(u),
     };
     final ids = {
       for (final p in found.myResults)
@@ -54,7 +54,7 @@ class Contacts {
     };
     return [
       for (final id in ids)
-        if (byId[id] != null) byId[id]!
+        if (byId[id] != null) byId[id]!,
     ];
   }
 
@@ -101,13 +101,17 @@ class Contacts {
   Future<void> unblock(int userId) async {
     await _client.callRaw<t.Boolean>(
       () => _client.raw.contacts.unblock(
-          myStoriesFrom: false, id: _client.peers.inputPeerUser(userId)),
+        myStoriesFrom: false,
+        id: _client.peers.inputPeerUser(userId),
+      ),
     );
   }
 
   /// Lists everyone you've [block]ed.
-  Future<List<PtgcUser>> getBlockedUsers(
-      {int offset = 0, int limit = 100}) async {
+  Future<List<PtgcUser>> getBlockedUsers({
+    int offset = 0,
+    int limit = 100,
+  }) async {
     final result = await _client.callRaw<t.ContactsBlockedBase>(
       () => _client.raw.contacts
           .getBlocked(myStoriesFrom: false, offset: offset, limit: limit),
@@ -132,7 +136,7 @@ class Contacts {
     };
     return [
       for (final id in ids)
-        if (byId[id] != null) byId[id]!
+        if (byId[id] != null) byId[id]!,
     ];
   }
 }

@@ -78,7 +78,9 @@ class MemberStatusChangedEvent extends TelegramEvent {
 /// [peers] is consulted (not fed — [TelegramClient] does that separately)
 /// to resolve `self` when needed.
 List<TelegramEvent> eventsFromRawUpdates(
-    t.UpdatesBase envelope, PeerCache peers) {
+  t.UpdatesBase envelope,
+  PeerCache peers,
+) {
   switch (envelope) {
     case t.Updates():
       return [for (final u in envelope.updates) ..._fromUpdate(u)];

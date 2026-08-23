@@ -35,12 +35,14 @@ Future<void> main() async {
         print('New message in ${event.chatId}: ${event.text}');
       case MemberStatusChangedEvent():
         print(
-            'Member ${event.userId} changed in ${event.chatId} (by ${event.actorId})');
+          'Member ${event.userId} changed in ${event.chatId} (by ${event.actorId})',
+        );
     }
   });
 
   print(
-      'Listening for 60s — send yourself a message on Telegram to see it appear...');
+    'Listening for 60s — send yourself a message on Telegram to see it appear...',
+  );
   await Future<void>.delayed(const Duration(seconds: 60));
 
   await subscription.cancel();

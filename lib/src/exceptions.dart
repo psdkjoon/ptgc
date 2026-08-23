@@ -56,10 +56,9 @@ class FloodWaitException extends PtgcException {
 /// called before [signIn]/[checkPassword] completed successfully, or the
 /// session was revoked server-side.
 class AuthRequiredException extends PtgcException {
-  AuthRequiredException(
-      [String message =
-          'Not authorized. Call auth.sendCode / auth.signIn first.'])
-      : super(message);
+  AuthRequiredException([
+    String message = 'Not authorized. Call auth.sendCode / auth.signIn first.',
+  ]) : super(message);
 }
 
 /// [AuthNamespace.signIn] succeeded up to the point of needing the

@@ -54,7 +54,8 @@ Future<void> main() async {
   final restricted =
       await client.members.list(group.id, filter: ParticipantFilter.restricted);
   print(
-      'ParticipantFilter.restricted (some other right revoked, can still read):');
+    'ParticipantFilter.restricted (some other right revoked, can still read):',
+  );
   for (final p in restricted) {
     print('  ${p.user.displayName} — role: ${p.role}, sendMessages blocked: '
         '${p.bannedRights?.sendMessages}');

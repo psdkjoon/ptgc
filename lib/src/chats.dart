@@ -159,10 +159,12 @@ class Chats {
         megagroup: false,
       );
 
-  Future<int?> _createChannel(String title,
-      {required String about,
-      required bool broadcast,
-      required bool megagroup}) async {
+  Future<int?> _createChannel(
+    String title, {
+    required String about,
+    required bool broadcast,
+    required bool megagroup,
+  }) async {
     final updates = await _client.callRaw<t.UpdatesBase>(
       () => _client.raw.channels.createChannel(
         broadcast: broadcast,
@@ -198,7 +200,9 @@ class Chats {
     if (_client.peers.isChannel(chatId)) {
       await _client.callRaw<t.UpdatesBase>(
         () => _client.raw.channels.editTitle(
-            channel: _client.peers.inputChannel(chatId), title: title),
+          channel: _client.peers.inputChannel(chatId),
+          title: title,
+        ),
       );
       return;
     }
@@ -252,7 +256,8 @@ class Chats {
     );
     if (result is t.ChatInviteExported) return result.link;
     throw RpcException(
-        t.RpcError(errorCode: 500, errorMessage: 'UNEXPECTED_INVITE_TYPE'));
+      t.RpcError(errorCode: 500, errorMessage: 'UNEXPECTED_INVITE_TYPE'),
+    );
   }
 
   /// Leaves [chatId]. Does not delete the chat, and (for groups you don't

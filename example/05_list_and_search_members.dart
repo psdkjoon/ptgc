@@ -45,7 +45,8 @@ Future<void> main() async {
       await client.members.list(groupId, filter: ParticipantFilter.admins);
   for (final p in admins) {
     print(
-        '${p.user.displayName}${p.rank != null && p.rank!.isNotEmpty ? " [${p.rank}]" : ""}');
+      '${p.user.displayName}${p.rank != null && p.rank!.isNotEmpty ? " [${p.rank}]" : ""}',
+    );
   }
 
   print('\n-- Search for "john" --');

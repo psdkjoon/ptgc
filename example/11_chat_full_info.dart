@@ -46,7 +46,8 @@ Future<void> main() async {
   print('${full.title} (${full.kind})');
   print('Members: ${full.participantsCount ?? 'unknown'}');
   print(
-      'Verified: ${full.isVerified}, Scam: ${full.isScam}, Fake: ${full.isFake}');
+    'Verified: ${full.isVerified}, Scam: ${full.isScam}, Fake: ${full.isFake}',
+  );
   if (full.username != null) print('Public link: t.me/${full.username}');
 
   await client.disconnect();

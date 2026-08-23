@@ -66,7 +66,8 @@ Future<void> main() async {
     print('3/5 Promoted ${moderator.displayName} to moderator.');
   } else {
     print(
-        '3/5 Skipped promotion — $moderatorUsername was not resolved/invited.');
+      '3/5 Skipped promotion — $moderatorUsername was not resolved/invited.',
+    );
   }
 
   // 4. Post a welcome message.

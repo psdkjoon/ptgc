@@ -59,9 +59,10 @@ class PeerCache {
 
   /// Feeds users/chats from a raw response into the cache. Safe to call
   /// with empty lists.
-  void feed(
-      {Iterable<t.UserBase> users = const [],
-      Iterable<t.ChatBase> chats = const []}) {
+  void feed({
+    Iterable<t.UserBase> users = const [],
+    Iterable<t.ChatBase> chats = const [],
+  }) {
     for (final u in users) {
       final id = idOfUser(u);
       _users[id] = u;

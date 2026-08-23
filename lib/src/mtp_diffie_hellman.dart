@@ -265,7 +265,8 @@ class _DiffieHellman {
 
     if (!_constantTimeEquals(answerHash, hash)) {
       throw Exception(
-          'Mismatch between server_DH_inner_data hash and its SHA1 — the response may be corrupted or tampered with.');
+        'Mismatch between server_DH_inner_data hash and its SHA1 — the response may be corrupted or tampered with.',
+      );
     }
 
     final gA = _bigEndianInteger(answerObj.gA);
@@ -304,11 +305,13 @@ class _DiffieHellman {
 
     if (result is DhGenFail) {
       throw Exception(
-          'DH key exchange failed (dh_gen_fail): the server rejected our client DH params.');
+        'DH key exchange failed (dh_gen_fail): the server rejected our client DH params.',
+      );
     }
     if (result is DhGenRetry) {
       throw Exception(
-          'DH key exchange needs a retry (dh_gen_retry): retrying the DH exchange is not implemented yet.');
+        'DH key exchange needs a retry (dh_gen_retry): retrying the DH exchange is not implemented yet.',
+      );
     }
     if (result is! DhGenOk) {
       throw Exception('Unexpected response to set_client_DH_params: $result.');
@@ -330,9 +333,12 @@ class _DiffieHellman {
     final expectedNewNonceHash1 = expectedNewNonceNHash.skip(4).toList();
 
     if (!_constantTimeEquals(
-        expectedNewNonceHash1, result.newNonceHash1.data)) {
+      expectedNewNonceHash1,
+      result.newNonceHash1.data,
+    )) {
       throw Exception(
-          'new_nonce_hash1 mismatch in dh_gen_ok response — the DH exchange may have been tampered with.');
+        'new_nonce_hash1 mismatch in dh_gen_ok response — the DH exchange may have been tampered with.',
+      );
     }
 
     final authKeyID =

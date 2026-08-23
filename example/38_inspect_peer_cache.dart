@@ -46,7 +46,8 @@ Future<void> main() async {
     final cached = client.peers.cachedChat(chat.id);
     if (cached is raw.Channel) {
       print(
-          '  raw access hash: ${cached.accessHash}, megagroup: ${cached.megagroup}');
+        '  raw access hash: ${cached.accessHash}, megagroup: ${cached.megagroup}',
+      );
     }
   }
 

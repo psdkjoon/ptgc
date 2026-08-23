@@ -52,7 +52,8 @@ Future<void> main() async {
   await client.members.ban(group.id, member.id);
   status = await client.members.get(group.id, member.id);
   print(
-      'Banned until: ${status?.bannedRights?.until ?? "forever (permanent)"}.');
+    'Banned until: ${status?.bannedRights?.until ?? "forever (permanent)"}.',
+  );
 
   await client.members.unban(group.id, member.id);
   print('Unbanned — reversing the permanent ban.');

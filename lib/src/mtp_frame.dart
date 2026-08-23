@@ -62,7 +62,8 @@ class _Frame {
 
     if (!_constantTimeEquals(expectedMsgKey, actualMsgKey)) {
       throw Exception(
-          'Mismatch between msg_key and decrypted SHA256 — the frame may be corrupted or tampered with.');
+        'Mismatch between msg_key and decrypted SHA256 — the frame may be corrupted or tampered with.',
+      );
     }
 
     final reader = BinaryReader(decryptedData);

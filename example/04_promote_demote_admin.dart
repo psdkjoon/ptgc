@@ -44,17 +44,19 @@ Future<void> main() async {
     groupId,
     member.id,
     const AdminRights(
-        deleteMessages: true,
-        banUsers: true,
-        inviteUsers: true,
-        pinMessages: true),
+      deleteMessages: true,
+      banUsers: true,
+      inviteUsers: true,
+      pinMessages: true,
+    ),
     rank: 'Mod',
   );
   print('Promoted ${member.displayName} to a limited admin.');
 
   final status = await client.members.get(groupId, member.id);
   print(
-      'Now: ${status?.role}, rights: ${status?.adminRights?.banUsers == true ? "can ban" : "cannot ban"}');
+    'Now: ${status?.role}, rights: ${status?.adminRights?.banUsers == true ? "can ban" : "cannot ban"}',
+  );
 
   // Revoke it entirely.
   await client.members.demote(groupId, member.id);

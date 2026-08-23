@@ -44,13 +44,16 @@ Future<void> main() async {
       BannedRights(sendMedia: true, sendStickers: true, sendGifs: true);
   await client.members.restrict(group.id, member.id, mediaOnlyBlock);
   print(
-      '${member.displayName} can still send text, but no media/stickers/GIFs.');
+    '${member.displayName} can still send text, but no media/stickers/GIFs.',
+  );
 
   var status = await client.members.get(group.id, member.id);
   print(
-      'sendMessages restricted: ${status?.bannedRights?.sendMessages} (should be false)');
+    'sendMessages restricted: ${status?.bannedRights?.sendMessages} (should be false)',
+  );
   print(
-      'sendMedia restricted: ${status?.bannedRights?.sendMedia} (should be true)');
+    'sendMedia restricted: ${status?.bannedRights?.sendMedia} (should be true)',
+  );
 
   // "Can chat, but can't invite others" — for a member you trust to
   // participate but not to grow the group's membership.

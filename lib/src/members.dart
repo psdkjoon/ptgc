@@ -55,11 +55,11 @@ class Members {
       if (result is! t.ChannelsChannelParticipants) return const [];
       _client.peers.feed(users: result.users, chats: result.chats);
       final byId = {
-        for (final u in result.users) idOfUser(u): PtgcUser.fromRaw(u)
+        for (final u in result.users) idOfUser(u): PtgcUser.fromRaw(u),
       };
       return [
         for (final p in result.participants)
-          Participant.fromChannelParticipant(p, byId)
+          Participant.fromChannelParticipant(p, byId),
       ];
     }
 
@@ -72,7 +72,7 @@ class Members {
     _client.peers
         .feed(users: fullChatResult.users, chats: fullChatResult.chats);
     final byId = {
-      for (final u in fullChatResult.users) idOfUser(u): PtgcUser.fromRaw(u)
+      for (final u in fullChatResult.users) idOfUser(u): PtgcUser.fromRaw(u),
     };
     final full = fullChatResult.fullChat;
     if (full is! t.ChatFull) return const [];
@@ -80,7 +80,7 @@ class Members {
     if (participants is! t.ChatParticipants) return const [];
     return [
       for (final p in participants.participants)
-        Participant.fromChatParticipant(p, byId)
+        Participant.fromChatParticipant(p, byId),
     ];
   }
 
@@ -98,7 +98,7 @@ class Members {
         if (result is! t.ChannelsChannelParticipant) return null;
         _client.peers.feed(users: result.users, chats: result.chats);
         final byId = {
-          for (final u in result.users) idOfUser(u): PtgcUser.fromRaw(u)
+          for (final u in result.users) idOfUser(u): PtgcUser.fromRaw(u),
         };
         return Participant.fromChannelParticipant(result.participant, byId);
       } on RpcException catch (e) {
@@ -198,8 +198,12 @@ class Members {
   /// You need [AdminRights.addAdmins] yourself to do this. Basic groups
   /// only support an all-or-nothing admin flag — [rights] is ignored there
   /// beyond "grant admin".
-  Future<void> promote(int chatId, int userId, AdminRights rights,
-      {String rank = ''}) async {
+  Future<void> promote(
+    int chatId,
+    int userId,
+    AdminRights rights, {
+    String rank = '',
+  }) async {
     if (_client.peers.isChannel(chatId)) {
       final updates = await _client.callRaw<t.UpdatesBase>(
         () => _client.raw.channels.editAdmin(
@@ -294,7 +298,9 @@ class Members {
   }
 
   t.ChannelParticipantsFilterBase _rawFilter(
-      ParticipantFilter filter, String query) {
+    ParticipantFilter filter,
+    String query,
+  ) {
     switch (filter) {
       case ParticipantFilter.recent:
         return const t.ChannelParticipantsRecent();

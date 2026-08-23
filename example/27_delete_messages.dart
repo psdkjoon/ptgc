@@ -41,7 +41,8 @@ Future<void> main() async {
   await client.messages
       .deleteMessages(chat.id, messageIds, revokeForEveryone: true);
   print(
-      'Deleted ${messageIds.length} message(s) from ${chat.title} for everyone.');
+    'Deleted ${messageIds.length} message(s) from ${chat.title} for everyone.',
+  );
 
   await client.disconnect();
 }

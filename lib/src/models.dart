@@ -192,20 +192,29 @@ class PtgcChat {
         );
       case t.ChatForbidden():
         return PtgcChat(
-            id: raw.id,
-            title: raw.title,
-            kind: ChatKind.group,
-            isForbidden: true);
+          id: raw.id,
+          title: raw.title,
+          kind: ChatKind.group,
+          isForbidden: true,
+        );
       case t.ChatEmpty():
         return PtgcChat(
-            id: raw.id, title: '', kind: ChatKind.group, isForbidden: true);
+          id: raw.id,
+          title: '',
+          kind: ChatKind.group,
+          isForbidden: true,
+        );
       default:
         // ChatBase has exactly these five variants; unreachable in
         // practice, but there's no ID we can safely read off the base
         // type, so surface a clearly-invalid placeholder rather than
         // fail to compile or throw.
         return const PtgcChat(
-            id: 0, title: '', kind: ChatKind.group, isForbidden: true);
+          id: 0,
+          title: '',
+          kind: ChatKind.group,
+          isForbidden: true,
+        );
     }
   }
 
@@ -256,7 +265,9 @@ class Participant {
   /// `ChannelParticipantBase`, looking [user] up in [users] (already fed
   /// with the response's own `.users` list by the caller).
   factory Participant.fromChannelParticipant(
-      t.ChannelParticipantBase raw, Map<int, PtgcUser> users) {
+    t.ChannelParticipantBase raw,
+    Map<int, PtgcUser> users,
+  ) {
     switch (raw) {
       case t.ChannelParticipantCreator():
         return Participant(
@@ -290,7 +301,9 @@ class Participant {
       case t.ChannelParticipantLeft():
         final id = idOfPeer(raw.peer);
         return Participant(
-            user: users[id] ?? PtgcUser(id: id), role: ParticipantRole.left);
+          user: users[id] ?? PtgcUser(id: id),
+          role: ParticipantRole.left,
+        );
       case t.ChannelParticipantSelf():
         return Participant(
           user: users[raw.userId] ?? PtgcUser(id: raw.userId),
@@ -308,13 +321,17 @@ class Participant {
         );
       default:
         return Participant(
-            user: const PtgcUser(id: 0), role: ParticipantRole.member);
+          user: const PtgcUser(id: 0),
+          role: ParticipantRole.member,
+        );
     }
   }
 
   /// Builds a [Participant] from a basic group's raw `ChatParticipantBase`.
   factory Participant.fromChatParticipant(
-      t.ChatParticipantBase raw, Map<int, PtgcUser> users) {
+    t.ChatParticipantBase raw,
+    Map<int, PtgcUser> users,
+  ) {
     switch (raw) {
       case t.ChatParticipantCreator():
         return Participant(
@@ -340,7 +357,9 @@ class Participant {
         );
       default:
         return Participant(
-            user: const PtgcUser(id: 0), role: ParticipantRole.member);
+          user: const PtgcUser(id: 0),
+          role: ParticipantRole.member,
+        );
     }
   }
 

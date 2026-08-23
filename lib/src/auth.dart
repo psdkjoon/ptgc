@@ -18,8 +18,11 @@ class SentCode {
   /// becomes available, if Telegram specified one.
   final Duration? timeout;
 
-  const SentCode._(
-      {required this.phoneCodeHash, required this.viaApp, this.timeout});
+  const SentCode._({
+    required this.phoneCodeHash,
+    required this.viaApp,
+    this.timeout,
+  });
 }
 
 /// What [AuthNamespace.signIn] resulted in.
@@ -88,8 +91,12 @@ class AuthNamespace {
     );
 
     if (sent is! t.AuthSentCode) {
-      throw RpcException(t.RpcError(
-          errorCode: 500, errorMessage: 'UNEXPECTED_SENT_CODE_TYPE'));
+      throw RpcException(
+        t.RpcError(
+          errorCode: 500,
+          errorMessage: 'UNEXPECTED_SENT_CODE_TYPE',
+        ),
+      );
     }
 
     _phoneCodeHash = sent.phoneCodeHash;
@@ -112,7 +119,8 @@ class AuthNamespace {
     final hash = phoneCodeHash ?? _phoneCodeHash;
     if (phone == null || hash == null) {
       throw StateError(
-          'Call auth.sendCode first, or pass phoneNumber/phoneCodeHash explicitly.');
+        'Call auth.sendCode first, or pass phoneNumber/phoneCodeHash explicitly.',
+      );
     }
 
     try {
@@ -120,7 +128,7 @@ class AuthNamespace {
         () => _client.raw.auth
             .signIn(phoneNumber: phone, phoneCodeHash: hash, phoneCode: code),
       );
-      return _handleAuthorization(auth);
+      return await _handleAuthorization(auth);
     } on RpcException catch (e) {
       if (e.description == 'SESSION_PASSWORD_NEEDED') {
         return _requestPasswordChallenge();
@@ -146,18 +154,23 @@ class AuthNamespace {
 
   Future<SignInResult> _requestPasswordChallenge() async {
     final password = await _client.callRaw<t.AccountPasswordBase>(
-        () => _client.raw.account.getPassword());
+      () => _client.raw.account.getPassword(),
+    );
     if (password is! t.AccountPassword) {
       throw RpcException(
-          t.RpcError(errorCode: 500, errorMessage: 'UNEXPECTED_PASSWORD_TYPE'));
+        t.RpcError(errorCode: 500, errorMessage: 'UNEXPECTED_PASSWORD_TYPE'),
+      );
     }
     _pendingPasswordChallenge = password;
-    return SignInResult._(SignInStatus.passwordRequired,
-        passwordHint: password.hint);
+    return SignInResult._(
+      SignInStatus.passwordRequired,
+      passwordHint: password.hint,
+    );
   }
 
   Future<SignInResult> _handleAuthorization(
-      t.AuthAuthorizationBase auth) async {
+    t.AuthAuthorizationBase auth,
+  ) async {
     if (auth is t.AuthAuthorizationSignUpRequired) {
       return const SignInResult._(SignInStatus.signUpRequired);
     }

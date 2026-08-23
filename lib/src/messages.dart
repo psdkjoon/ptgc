@@ -53,7 +53,10 @@ class Messages {
   /// Forwards [messageIds] from [fromChatId] to [toChatId], preserving the
   /// "Forwarded from" attribution.
   Future<void> forwardMessages(
-      int fromChatId, List<int> messageIds, int toChatId) async {
+    int fromChatId,
+    List<int> messageIds,
+    int toChatId,
+  ) async {
     await _client.callRaw<t.UpdatesBase>(
       () => _client.raw.messages.forwardMessages(
         silent: false,
@@ -74,8 +77,11 @@ class Messages {
   /// Deletes [messageIds] from [chatId]. [revokeForEveryone] deletes them
   /// for the other participant(s) too where Telegram allows it (always
   /// true in your own DMs/groups; time-limited elsewhere).
-  Future<void> deleteMessages(int chatId, List<int> messageIds,
-      {bool revokeForEveryone = true}) async {
+  Future<void> deleteMessages(
+    int chatId,
+    List<int> messageIds, {
+    bool revokeForEveryone = true,
+  }) async {
     if (_client.peers.isChannel(chatId)) {
       await _client.callRaw<t.MessagesAffectedMessagesBase>(
         () => _client.raw.channels.deleteMessages(

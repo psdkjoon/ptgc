@@ -52,8 +52,9 @@ Future<void> main() async {
     groupId,
     member.id,
     BannedRights(
-        sendMessages: true,
-        until: DateTime.now().add(const Duration(hours: 1))),
+      sendMessages: true,
+      until: DateTime.now().add(const Duration(hours: 1)),
+    ),
   );
   print('Restricted ${member.displayName} for 1 hour.');
 
