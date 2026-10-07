@@ -37,7 +37,7 @@ Future<void> main() async {
   }
 
   print('Old title: ${chat.title}');
-  await client.chats.setTitle(chat.id, newTitle);
+  await client.chats.setTitle(chatId: chat.id, title: newTitle);
   print('Renamed to: $newTitle');
 
   await client.disconnect();

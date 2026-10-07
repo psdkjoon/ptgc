@@ -48,7 +48,7 @@ Future<void> main() async {
     return;
   }
 
-  final participant = await client.members.get(group.id, member.id);
+  final participant = await client.members.get(chatId: group.id, userId: member.id);
   if (participant == null) {
     print('${member.displayName} is not a member of ${group.title}.');
   } else {

@@ -48,7 +48,7 @@ Future<void> main() async {
       ChatKind.channel => 'Announcement test (sent by the ptgc 28 example)',
     };
     try {
-      await client.messages.sendMessage(chat.id, text);
+      await client.messages.sendMessage(chatId: chat.id, text: text);
       print('Sent to ${chat.title} ($kind).');
     } on RpcException catch (e) {
       // e.g. CHAT_WRITE_FORBIDDEN in a channel you can only read.

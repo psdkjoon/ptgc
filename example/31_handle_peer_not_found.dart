@@ -32,7 +32,7 @@ Future<void> main() async {
   }
 
   try {
-    await client.messages.sendMessage(unseenUserId, 'hi');
+    await client.messages.sendMessage(chatId: unseenUserId, text: 'hi');
   } on PeerNotFoundException catch (e) {
     print('As expected: ${e.message}');
     print('Fix: resolve the peer first — e.g. '

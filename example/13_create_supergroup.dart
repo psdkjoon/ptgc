@@ -42,7 +42,7 @@ Future<void> main() async {
   print('Created "$supergroupTitle" — id: $chatId');
 
   // You're automatically the creator/owner.
-  final me = await client.members.get(chatId, client.userId!);
+  final me = await client.members.get(chatId: chatId, userId: client.userId!);
   print('Your role: ${me?.role}');
 
   // Grab an invite link right away so you have something to share.

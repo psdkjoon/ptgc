@@ -44,7 +44,7 @@ Future<void> main() async {
     if (user != null) userIds.add(user.id);
   }
 
-  final failed = await client.members.invite(groupId, userIds);
+  final failed = await client.members.invite(chatId: groupId, userIds: userIds);
 
   print('Invited ${userIds.length - failed.length}/${userIds.length} users.');
   if (failed.isNotEmpty) {

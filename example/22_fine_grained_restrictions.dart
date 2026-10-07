@@ -42,12 +42,12 @@ Future<void> main() async {
   // getting spammed with images without silencing the person entirely.
   const mediaOnlyBlock =
       BannedRights(sendMedia: true, sendStickers: true, sendGifs: true);
-  await client.members.restrict(group.id, member.id, mediaOnlyBlock);
+  await client.members.restrict(chatId: group.id, userId: member.id, rights: mediaOnlyBlock);
   print(
     '${member.displayName} can still send text, but no media/stickers/GIFs.',
   );
 
-  var status = await client.members.get(group.id, member.id);
+  var status = await client.members.get(chatId: group.id, userId: member.id);
   print(
     'sendMessages restricted: ${status?.bannedRights?.sendMessages} (should be false)',
   );
@@ -58,10 +58,10 @@ Future<void> main() async {
   // "Can chat, but can't invite others" — for a member you trust to
   // participate but not to grow the group's membership.
   const noInvitesRestriction = BannedRights(inviteUsers: true);
-  await client.members.restrict(group.id, member.id, noInvitesRestriction);
+  await client.members.restrict(chatId: group.id, userId: member.id, rights: noInvitesRestriction);
   print('${member.displayName} can no longer invite others.');
 
-  await client.members.unban(group.id, member.id);
+  await client.members.unban(chatId: group.id, userId: member.id);
   print('All restrictions lifted.');
 
   await client.disconnect();

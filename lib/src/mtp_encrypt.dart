@@ -1,8 +1,16 @@
+/// AES encryption primitives used by the MTProto layer.
+///
+/// [AesEcb] implements the IGE (Infinite Garble Extension) mode used for
+/// MTProto message encryption; [AesCtr] implements the CTR mode used for
+/// transport obfuscation. Both wrap PointyCastle under the hood.
+library;
+
 import 'dart:typed_data';
 
 import 'package:pointycastle/export.dart';
 
-/// Wraps the AES Algorithm.
+/// AES-ECB block cipher wrapper, used to implement AES-IGE for MTProto
+/// message encryption/decryption.
 class AesEcb {
   final Key key;
   final BlockCipher _cipher;
@@ -62,7 +70,7 @@ class AesEcb {
   }
 }
 
-/// Represents an encripted value.
+/// A raw encrypted byte buffer.
 class Encrypted {
   /// Creates an Encrypted object from a Uint8List.
   const Encrypted(this.bytes);

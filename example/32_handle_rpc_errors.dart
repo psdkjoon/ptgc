@@ -41,7 +41,7 @@ Future<void> main() async {
 
   try {
     // You don't have rights here, so Telegram should reject this outright.
-    await client.members.ban(group.id, client.userId!);
+    await client.members.ban(chatId: group.id, userId: client.userId!);
   } on RpcException catch (e) {
     switch (e.description) {
       case 'CHAT_ADMIN_REQUIRED':

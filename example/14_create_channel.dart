@@ -38,7 +38,7 @@ Future<void> main() async {
   print('Created "$channelTitle" — id: $chatId');
 
   // Post the first message — only admins (you, right now) can do this.
-  await client.messages.sendMessage(chatId, 'Hello, this is the first post!');
+  await client.messages.sendMessage(chatId: chatId, 'Hello, text: this is the first post!');
   print('Posted the first message.');
 
   await client.disconnect();

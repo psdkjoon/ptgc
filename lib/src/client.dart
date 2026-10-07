@@ -19,7 +19,7 @@ import 'updates.dart';
 
 /// The `ptgc` package version, sent to Telegram as this client's app
 /// version during the handshake.
-const String packageVersion = '1.0.0';
+const String packageVersion = '2.0.0';
 
 /// A logged-in Telegram **user** connection (MTProto), as opposed to a bot.
 ///

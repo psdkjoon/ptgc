@@ -50,13 +50,13 @@ Future<void> main() async {
     // instead, since a flood wait is a transport-level failure, not a
     // per-user one.
     try {
-      await client.members.invite(group.id, [user.id]);
+      await client.members.invite(chatId: group.id, userIds: [user.id]);
       print('Invited ${user.displayName}.');
     } on FloodWaitException catch (e) {
       print('Flood wait: sleeping ${e.duration.inSeconds}s before retrying '
           '${user.displayName}...');
       await Future<void>.delayed(e.duration);
-      await client.members.invite(group.id, [user.id]);
+      await client.members.invite(chatId: group.id, userIds: [user.id]);
       print('Invited ${user.displayName} (after waiting).');
     }
   }

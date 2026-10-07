@@ -50,7 +50,7 @@ Future<void> main() async {
   // The chat's ID is now usable everywhere else in ptgc, same as if you'd
   // seen it via listDialogs or Members.list.
   final admins =
-      await client.members.list(chat.id, filter: ParticipantFilter.admins);
+      await client.members.list(chatId: chat.id, filter: ParticipantFilter.admins);
   print('${admins.length} admin(s).');
 
   await client.disconnect();

@@ -42,14 +42,14 @@ Future<void> main() async {
     return;
   }
 
-  final chatId = await client.chats.createGroup(groupTitle, userIds);
+  final chatId = await client.chats.createGroup(title: groupTitle, userIds: userIds);
   if (chatId == null) {
     print('Group creation did not return a chat id.');
   } else {
     print('Created "$groupTitle" — id: $chatId');
     // Basic groups don't page/filter server-side (see Members.list docs) —
     // this just confirms everyone landed in the new group.
-    final members = await client.members.list(chatId);
+    final members = await client.members.list(chatId: chatId);
     print('Members: ${members.map((p) => p.user.displayName).join(', ')}');
   }
 

@@ -41,9 +41,9 @@ Future<void> main() async {
   // Grant a specific, limited set of rights — a moderator who can delete
   // messages and ban users, but can't add other admins or change chat info.
   await client.members.promote(
-    groupId,
-    member.id,
-    const AdminRights(
+    chatId: groupId,
+    userId: member.id,
+    rights: const AdminRights(
       deleteMessages: true,
       banUsers: true,
       inviteUsers: true,
@@ -53,13 +53,13 @@ Future<void> main() async {
   );
   print('Promoted ${member.displayName} to a limited admin.');
 
-  final status = await client.members.get(groupId, member.id);
+  final status = await client.members.get(chatId: groupId, userId: member.id);
   print(
     'Now: ${status?.role}, rights: ${status?.adminRights?.banUsers == true ? "can ban" : "cannot ban"}',
   );
 
   // Revoke it entirely.
-  await client.members.demote(groupId, member.id);
+  await client.members.demote(chatId: groupId, userId: member.id);
   print('Demoted ${member.displayName} back to a regular member.');
 
   await client.disconnect();

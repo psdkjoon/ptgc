@@ -26,7 +26,7 @@ Future<void> main() async {
 
   // Message yourself — the "Saved Messages" chat, addressed by your own ID.
   final selfId = client.userId!;
-  await client.messages.sendMessage(selfId, 'Hello from ptgc!');
+  await client.messages.sendMessage(chatId: selfId, text: 'Hello from ptgc!');
   print('Sent a message to Saved Messages.');
 
   final subscription = client.events.listen((event) {

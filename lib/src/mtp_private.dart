@@ -1,5 +1,10 @@
 part of 'mtp.dart';
 
+// Shared private utilities for the MTProto layer: a process-wide CSPRNG,
+// integer/hex conversion helpers, AES-IGE encryption, and the
+// MessageIdGenerator that produces the monotonic, time-based message IDs
+// the MTProto spec requires.
+
 final _rng = Random.secure();
 
 Uint8List _int64ToBigEndian(int value) {

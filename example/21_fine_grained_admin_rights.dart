@@ -48,7 +48,7 @@ Future<void> main() async {
       .promote(group.id, member.id, trustedModRights, rank: 'Senior Mod');
   print('Promoted ${member.displayName} with a broad-but-not-full rights set.');
 
-  final status = await client.members.get(group.id, member.id);
+  final status = await client.members.get(chatId: group.id, userId: member.id);
   final rights = status?.adminRights;
   if (rights != null) {
     print('changeInfo: ${rights.changeInfo}');
@@ -61,7 +61,7 @@ Future<void> main() async {
     print('manageTopics: ${rights.manageTopics}');
   }
 
-  await client.members.demote(group.id, member.id);
+  await client.members.demote(chatId: group.id, userId: member.id);
   print('Demoted ${member.displayName} back to a regular member.');
 
   await client.disconnect();

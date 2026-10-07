@@ -45,14 +45,14 @@ Future<void> main() async {
   }
 
   final banned =
-      await client.members.list(group.id, filter: ParticipantFilter.banned);
+      await client.members.list(chatId: group.id, filter: ParticipantFilter.banned);
   print('ParticipantFilter.banned (viewMessages revoked — fully kicked out):');
   for (final p in banned) {
     print('  ${p.user.displayName} — role: ${p.role}');
   }
 
   final restricted =
-      await client.members.list(group.id, filter: ParticipantFilter.restricted);
+      await client.members.list(chatId: group.id, filter: ParticipantFilter.restricted);
   print(
     'ParticipantFilter.restricted (some other right revoked, can still read):',
   );

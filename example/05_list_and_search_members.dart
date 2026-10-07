@@ -35,14 +35,14 @@ Future<void> main() async {
   final groupId = group.id;
 
   print('-- Recent members --');
-  final recent = await client.members.list(groupId, limit: 20);
+  final recent = await client.members.list(chatId: groupId, limit: 20);
   for (final p in recent) {
     print('${p.user.displayName} (${p.role})');
   }
 
   print('\n-- Admins --');
   final admins =
-      await client.members.list(groupId, filter: ParticipantFilter.admins);
+      await client.members.list(chatId: groupId, filter: ParticipantFilter.admins);
   for (final p in admins) {
     print(
       '${p.user.displayName}${p.rank != null && p.rank!.isNotEmpty ? " [${p.rank}]" : ""}',
@@ -51,14 +51,14 @@ Future<void> main() async {
 
   print('\n-- Search for "john" --');
   final results = await client.members
-      .list(groupId, filter: ParticipantFilter.search, query: 'john');
+      .list(chatId: groupId, filter: ParticipantFilter.search, query: 'john');
   for (final p in results) {
     print(p.user.displayName);
   }
 
   // Paging: pass the offset of the last page to keep going.
   print('\n-- Next page --');
-  final page2 = await client.members.list(groupId, offset: 20, limit: 20);
+  final page2 = await client.members.list(chatId: groupId, offset: 20, limit: 20);
   print('${page2.length} more members.');
 
   await client.disconnect();

@@ -35,7 +35,7 @@ Future<void> main() async {
   }
 
   await client.contacts
-      .addContact(user.id, firstName: user.firstName ?? username);
+      .addContact(userId: user.id, firstName: user.firstName ?? username);
   print('Added ${user.displayName} to contacts.');
 
   final found = await client.contacts.searchUsers(username);

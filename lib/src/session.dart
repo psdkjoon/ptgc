@@ -74,8 +74,13 @@ class PtgcSession {
 /// — anyone who has them can act as the logged-in account without a
 /// password or code.
 abstract class SessionStore {
+  /// Returns the saved session, or `null` if none exists yet.
   Future<PtgcSession?> load();
+
+  /// Persists [session], overwriting any previously saved one.
   Future<void> save(PtgcSession session);
+
+  /// Deletes any saved session — called by [AuthNamespace.logOut].
   Future<void> clear();
 }
 
@@ -85,6 +90,10 @@ class FileSessionStore implements SessionStore {
 
   const FileSessionStore([this.path = 'ptgc.session.json']);
 
+  /// Reads the session file. Returns `null` if the file doesn't exist yet,
+  /// or if its contents can't be parsed (treated as "no saved session"
+  /// rather than a hard error, so a corrupt or foreign file doesn't prevent
+  /// startup).
   @override
   Future<PtgcSession?> load() async {
     final file = File(path);
@@ -94,16 +103,17 @@ class FileSessionStore implements SessionStore {
           jsonDecode(await file.readAsString()) as Map<String, dynamic>;
       return PtgcSession.fromJson(json);
     } catch (_) {
-      // Corrupt or foreign file — treat as "no session" rather than crash.
       return null;
     }
   }
 
+  /// Writes [session] as JSON to [path], creating the file if needed.
   @override
   Future<void> save(PtgcSession session) async {
     await File(path).writeAsString(jsonEncode(session.toJson()));
   }
 
+  /// Deletes the session file if it exists.
   @override
   Future<void> clear() async {
     final file = File(path);
@@ -117,12 +127,15 @@ class FileSessionStore implements SessionStore {
 class MemorySessionStore implements SessionStore {
   PtgcSession? _session;
 
+  /// Returns the in-memory session, or `null` if none has been saved yet.
   @override
   Future<PtgcSession?> load() async => _session;
 
+  /// Stores [session] in memory, replacing any previous one.
   @override
   Future<void> save(PtgcSession session) async => _session = session;
 
+  /// Clears the in-memory session.
   @override
   Future<void> clear() async => _session = null;
 }

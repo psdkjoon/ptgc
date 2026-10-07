@@ -40,22 +40,22 @@ Future<void> main() async {
   // Temporary: lifts itself after 5 minutes. Telegram treats anything
   // under 30 seconds as permanent, so this is close to the practical floor.
   final until = DateTime.now().add(const Duration(minutes: 5));
-  await client.members.ban(group.id, member.id, until: until);
-  var status = await client.members.get(group.id, member.id);
+  await client.members.ban(chatId: group.id, userId: member.id, until: until);
+  var status = await client.members.get(chatId: group.id, userId: member.id);
   print('Banned until ${status?.bannedRights?.until} (temporary).');
 
-  await client.members.unban(group.id, member.id);
+  await client.members.unban(chatId: group.id, userId: member.id);
   print('Unbanned early.');
 
   // Permanent: no `until` at all — stays banned until you explicitly
   // unban() them, even if they try to rejoin via invite link.
-  await client.members.ban(group.id, member.id);
-  status = await client.members.get(group.id, member.id);
+  await client.members.ban(chatId: group.id, userId: member.id);
+  status = await client.members.get(chatId: group.id, userId: member.id);
   print(
     'Banned until: ${status?.bannedRights?.until ?? "forever (permanent)"}.',
   );
 
-  await client.members.unban(group.id, member.id);
+  await client.members.unban(chatId: group.id, userId: member.id);
   print('Unbanned — reversing the permanent ban.');
 
   await client.disconnect();

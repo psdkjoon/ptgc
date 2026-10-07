@@ -1,13 +1,25 @@
 part of 'mtp.dart';
 
+// Holds a pending RPC call while waiting for its response frame.
 class _PendingTask {
   final Completer<t.Result> completer;
   final t.TlMethod method;
+
+  // Acks that were piggybacked on this message's send — if the message
+  // needs to be retried (e.g. after a BadServerSalt), these acks must be
+  // put back on the queue so they don't get silently dropped.
   final List<int> sentAcks;
 
   _PendingTask(this.completer, this.method, this.sentAcks);
 }
 
+/// The MTProto [Client]: an encrypted, authenticated connection to one
+/// Telegram data center.
+///
+/// Callers use this through [TelegramClient], which owns its lifecycle and
+/// routes every namespace call (auth, channels, messages, ...) through
+/// [invoke]. Direct use is only necessary when calling raw TL methods that
+/// `ptgc` doesn't wrap — reach those through [TelegramClient.raw].
 class Client extends t.Client {
   Client({
     required this.socket,
@@ -27,6 +39,9 @@ class Client extends t.Client {
     });
   }
 
+  /// Performs the Diffie–Hellman key exchange on [socket] and returns the
+  /// resulting [AuthorizationKey]. Called once per data center — the key is
+  /// then saved to the [SessionStore] and reused on later connections.
   static Future<AuthorizationKey> authorize(
     SocketAbstraction socket,
     Obfuscation obfuscation,
@@ -56,6 +71,9 @@ class Client extends t.Client {
   final Obfuscation obfuscation;
   final SocketAbstraction socket;
   final MessageIdGenerator idGenerator;
+
+  /// Message IDs awaiting acknowledgement; piggybacked on the next outgoing
+  /// encrypted message as a `MsgsAck` frame.
   final Set<int> msgsToAck = {};
 
   late final _EncryptedTransformer _transformer;
@@ -66,6 +84,8 @@ class Client extends t.Client {
 
   final int _sessionId = Random.secure().nextInt(0x7FFFFFFF);
 
+  /// Broadcast stream of incoming [UpdatesBase] envelopes — listened to by
+  /// [TelegramClient] to feed [PeerCache] and emit [TelegramEvent]s.
   Stream<UpdatesBase> get stream => _streamController.stream;
 
   void _handleIncomingMessage(TlObject msg) {
@@ -100,11 +120,11 @@ class Client extends t.Client {
         _pendingTasks.remove(reqMsgId);
         return;
       } else if (result is GzipPacked) {
+        // Telegram sometimes gzip-compresses RPC results — decompress and
+        // re-process as if it arrived uncompressed.
         final gZippedData = GZipDecoder().decodeBytes(result.packedData);
-
         final newObj =
             BinaryReader(Uint8List.fromList(gZippedData)).readObject();
-
         final newRpcResult = RpcResult(reqMsgId: reqMsgId, result: newObj);
         _handleIncomingMessage(newRpcResult);
         return;
@@ -122,6 +142,8 @@ class Client extends t.Client {
         msg.serverSalt,
       );
     } else if (msg is BadServerSalt) {
+      // Server rejected our salt — update to the one it gave us and retry
+      // the pending message that triggered the error.
       authorizationKey = AuthorizationKey(
         authorizationKey.id,
         authorizationKey.key,
@@ -155,25 +177,14 @@ class Client extends t.Client {
     List<int> currentAcks = [];
 
     if (preferEncryption && msgsToAck.isNotEmpty) {
+      // Piggyback pending acks on a separate MsgsAck frame sent just before
+      // the actual request, rather than bundling into a MsgContainer — the
+      // container path is left in place below as commented-out code for
+      // reference if that approach is ever revisited.
       currentAcks = msgsToAck.toList();
       final ack = idGenerator._next(false);
       final ackMsg = MsgsAck(msgIds: currentAcks);
       msgsToAck.clear();
-
-      // final container = MsgContainer(
-      //   messages: [
-      //     Msg(msgId: m.id, seqno: m.seqno, bytes: 0, body: method),
-      //     Msg(msgId: ack.id, seqno: ack.seqno, bytes: 0, body: ackMsg),
-      //   ],
-      // );
-
-      // void nop(TlObject o) {
-      //   //
-      // }
-
-      // nop(container);
-
-      //return invoke(container, false);
 
       final ackBuffer = _encodeWithAuth(
         ackMsg,

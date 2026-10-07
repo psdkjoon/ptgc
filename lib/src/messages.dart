@@ -30,7 +30,7 @@ class Messages {
   /// Sends a plain-text message to [chatId] (a user, basic group, or
   /// supergroup/channel — resolved automatically). Returns the new
   /// message's ID.
-  Future<int> sendMessage(int chatId, String text) async {
+  Future<int> sendMessage({required int chatId, required String text}) async {
     final randomId = _randomId();
     final updates = await _client.callRaw<t.UpdatesBase>(
       () => _client.raw.messages.sendMessage(
@@ -52,11 +52,11 @@ class Messages {
 
   /// Forwards [messageIds] from [fromChatId] to [toChatId], preserving the
   /// "Forwarded from" attribution.
-  Future<void> forwardMessages(
-    int fromChatId,
-    List<int> messageIds,
-    int toChatId,
-  ) async {
+  Future<void> forwardMessages({
+    required int fromChatId,
+    required List<int> messageIds,
+    required int toChatId,
+  }) async {
     await _client.callRaw<t.UpdatesBase>(
       () => _client.raw.messages.forwardMessages(
         silent: false,
@@ -77,9 +77,9 @@ class Messages {
   /// Deletes [messageIds] from [chatId]. [revokeForEveryone] deletes them
   /// for the other participant(s) too where Telegram allows it (always
   /// true in your own DMs/groups; time-limited elsewhere).
-  Future<void> deleteMessages(
-    int chatId,
-    List<int> messageIds, {
+  Future<void> deleteMessages({
+    required int chatId,
+    required List<int> messageIds,
     bool revokeForEveryone = true,
   }) async {
     if (_client.peers.isChannel(chatId)) {

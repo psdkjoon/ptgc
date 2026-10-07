@@ -1,4 +1,15 @@
-/// Telegram Client API (MTProto) to connect to Telegram and control a user programmatically.
+/// MTProto transport layer for `ptgc`.
+///
+/// This library is the lowest level of the stack: it owns the encrypted
+/// socket connection to a Telegram data center, the Diffie–Hellman key
+/// exchange that produces an [AuthorizationKey], and the message framing
+/// (serialization, padding, AES-IGE encryption, obfuscation) described in
+/// https://core.telegram.org/mtproto.
+///
+/// It is assembled as a `part` library so the internal helpers (`_Frame`,
+/// `_EncryptedTransformer`, `MessageIdGenerator`, ...) can share private
+/// state without leaking into the public API. The single entry point for
+/// callers is [Client] — everything else here is an implementation detail.
 library ptgc_mtp;
 
 import 'dart:async';

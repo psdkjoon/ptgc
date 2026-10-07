@@ -60,8 +60,8 @@ class Contacts {
 
   /// Adds [userId] to your contacts. [firstName]/[lastName] are your own
   /// label for them, not pulled from their profile.
-  Future<void> addContact(
-    int userId, {
+  Future<void> addContact({
+    required int userId,
     required String firstName,
     String lastName = '',
     String phone = '',

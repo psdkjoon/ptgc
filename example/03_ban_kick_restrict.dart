@@ -45,13 +45,13 @@ Future<void> main() async {
 
   final groupId = group.id;
 
-  print('Current status: ${await client.members.get(groupId, member.id)}');
+  print('Current status: ${await client.members.get(chatId: groupId, userId: member.id)}');
 
   // Mute them for an hour without removing them from the chat.
   await client.members.restrict(
-    groupId,
-    member.id,
-    BannedRights(
+    chatId: groupId,
+    userId: member.id,
+    rights: BannedRights(
       sendMessages: true,
       until: DateTime.now().add(const Duration(hours: 1)),
     ),
@@ -59,16 +59,16 @@ Future<void> main() async {
   print('Restricted ${member.displayName} for 1 hour.');
 
   // Lift that restriction early.
-  await client.members.unban(groupId, member.id);
+  await client.members.unban(chatId: groupId, userId: member.id);
   print('Restriction lifted.');
 
   // Remove them but let them rejoin later (a "kick" in the everyday sense).
-  await client.members.kick(groupId, member.id);
+  await client.members.kick(chatId: groupId, userId: member.id);
   print('Kicked ${member.displayName} (they can rejoin via invite link).');
 
   // A permanent ban — they can't rejoin until explicitly unbanned.
   // await client.members.ban(groupId, member.id);
-  // await client.members.unban(groupId, member.id); // to reverse it
+  // await client.members.unban(chatId: groupId, userId: member.id); // to reverse it
 
   await client.disconnect();
 }

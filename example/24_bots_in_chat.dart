@@ -36,7 +36,7 @@ Future<void> main() async {
   }
 
   final bots =
-      await client.members.list(group.id, filter: ParticipantFilter.bots);
+      await client.members.list(chatId: group.id, filter: ParticipantFilter.bots);
   if (bots.isEmpty) {
     print('No bots in ${group.title}.');
   } else {

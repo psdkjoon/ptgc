@@ -49,7 +49,7 @@ Future<void> main() async {
     final user = await client.contacts.resolveUsername(username);
     if (user != null) memberIds.add(user.id);
   }
-  final failed = await client.members.invite(chatId, memberIds);
+  final failed = await client.members.invite(chatId: chatId, userIds: memberIds);
   print(
       '2/5 Invited ${memberIds.length - failed.length}/${memberIds.length} member(s)'
       '${failed.isEmpty ? '' : ' (failed: $failed)'}');
@@ -62,7 +62,7 @@ Future<void> main() async {
     const coOwnerRights = AdminRights.full();
     final trustedModRights = coOwnerRights.copyWith(addAdmins: false);
     await client.members
-        .promote(chatId, moderator.id, trustedModRights, rank: 'Mod');
+        .promote(chatId: chatId, userId: moderator.id, rights: trustedModRights, rank: 'Mod');
     print('3/5 Promoted ${moderator.displayName} to moderator.');
   } else {
     print(
@@ -72,8 +72,8 @@ Future<void> main() async {
 
   // 4. Post a welcome message.
   await client.messages.sendMessage(
-    chatId,
-    'Welcome! This group is moderated — please keep things on-topic.',
+    chatId: chatId,
+    text: 'Welcome! This group is moderated — please keep things on-topic.',
   );
   print('4/5 Posted a welcome message.');
 

@@ -126,7 +126,7 @@ class Chats {
   /// members — for anything bigger, or if you want channel features
   /// (public username, admin hierarchy beyond one level, etc), use
   /// [createSupergroup]/[createChannel] instead.
-  Future<int?> createGroup(String title, List<int> userIds) async {
+  Future<int?> createGroup({required String title, required List<int> userIds}) async {
     final result = await _client.callRaw<t.MessagesInvitedUsersBase>(
       () => _client.raw.messages.createChat(
         users: [for (final id in userIds) _client.peers.inputUser(id)],
@@ -196,7 +196,7 @@ class Chats {
   }
 
   /// Renames [chatId].
-  Future<void> setTitle(int chatId, String title) async {
+  Future<void> setTitle({required int chatId, required String title}) async {
     if (_client.peers.isChannel(chatId)) {
       await _client.callRaw<t.UpdatesBase>(
         () => _client.raw.channels.editTitle(

@@ -41,7 +41,11 @@ Future<void> main() async {
     return;
   }
 
-  await client.messages.forwardMessages(source.id, messageIds, destination.id);
+  await client.messages.forwardMessages(
+    fromChatId: source.id,
+    messageIds: messageIds,
+    toChatId: destination.id,
+  );
   print('Forwarded ${messageIds.length} message(s) from ${source.title} '
       'to ${destination.title}.');
 

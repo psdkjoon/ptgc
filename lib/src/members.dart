@@ -35,8 +35,8 @@ class Members {
   /// / [ParticipantFilter.restricted] (narrows by name there too).
   /// [offset]/[limit] page through large lists — Telegram caps [limit] at
   /// 200 per call.
-  Future<List<Participant>> list(
-    int chatId, {
+  Future<List<Participant>> list({
+    required int chatId,
     ParticipantFilter filter = ParticipantFilter.recent,
     String query = '',
     int offset = 0,
@@ -86,7 +86,7 @@ class Members {
 
   /// Looks up a single member's status. Returns `null` if [userId] isn't a
   /// member of [chatId].
-  Future<Participant?> get(int chatId, int userId) async {
+  Future<Participant?> get({required int chatId, required int userId}) async {
     if (_client.peers.isChannel(chatId)) {
       try {
         final result = await _client.callRaw<t.ChannelsChannelParticipantBase>(
@@ -120,7 +120,7 @@ class Members {
   ///
   /// If you want them removable-but-rejoinable instead (a "kick" in the
   /// usual sense), use [kick].
-  Future<void> ban(int chatId, int userId, {DateTime? until}) async {
+  Future<void> ban({required int chatId, required int userId, DateTime? until}) async {
     if (_client.peers.isChannel(chatId)) {
       final updates = await _client.callRaw<t.UpdatesBase>(
         () => _client.raw.channels.editBanned(
@@ -148,17 +148,17 @@ class Members {
   ///
   /// Supergroups/channels have no separate "kick" RPC, so this bans and
   /// immediately unbans — Telegram's own idiom for the same effect.
-  Future<void> kick(int chatId, int userId) async {
-    await ban(chatId, userId);
+  Future<void> kick({required int chatId, required int userId}) async {
+    await ban(chatId: chatId, userId: userId);
     if (_client.peers.isChannel(chatId)) {
-      await unban(chatId, userId);
+      await unban(chatId: chatId, userId: userId);
     }
   }
 
   /// Lifts a [ban]/[restrict] on [userId] in [chatId]. No-op for basic
   /// groups, which have no persistent banned state — removing a member
   /// there ([ban]) already just ends their membership.
-  Future<void> unban(int chatId, int userId) async {
+  Future<void> unban({required int chatId, required int userId}) async {
     if (!_client.peers.isChannel(chatId)) return;
     final updates = await _client.callRaw<t.UpdatesBase>(
       () => _client.raw.channels.editBanned(
@@ -174,7 +174,7 @@ class Members {
   /// them, or block them from sending media) without removing them from
   /// the chat. Supergroups/channels only — see [BannedRights] for what you
   /// can restrict.
-  Future<void> restrict(int chatId, int userId, BannedRights rights) async {
+  Future<void> restrict({required int chatId, required int userId, required BannedRights rights}) async {
     if (!_client.peers.isChannel(chatId)) {
       throw StateError(
         'restrict() needs a supergroup/channel; $chatId looks like a basic '
@@ -198,10 +198,10 @@ class Members {
   /// You need [AdminRights.addAdmins] yourself to do this. Basic groups
   /// only support an all-or-nothing admin flag — [rights] is ignored there
   /// beyond "grant admin".
-  Future<void> promote(
-    int chatId,
-    int userId,
-    AdminRights rights, {
+  Future<void> promote({
+    required int chatId,
+    required int userId,
+    required AdminRights rights,
     String rank = '',
   }) async {
     if (_client.peers.isChannel(chatId)) {
@@ -227,9 +227,9 @@ class Members {
 
   /// Revokes [userId]'s admin rights in [chatId], back to a regular
   /// member.
-  Future<void> demote(int chatId, int userId) async {
+  Future<void> demote({required int chatId, required int userId}) async {
     if (_client.peers.isChannel(chatId)) {
-      await promote(chatId, userId, const AdminRights.none());
+      await promote(chatId: chatId, userId: userId, rights: const AdminRights.none());
       return;
     }
     await _client.callRaw<t.Boolean>(
@@ -248,7 +248,7 @@ class Members {
   ///
   /// Returns the subset of [userIds] that couldn't be added (e.g. due to
   /// privacy settings) — an empty list means everyone was added.
-  Future<List<int>> invite(int chatId, List<int> userIds) async {
+  Future<List<int>> invite({required int chatId, required List<int> userIds}) async {
     final inputUsers = [for (final id in userIds) _client.peers.inputUser(id)];
 
     if (_client.peers.isChannel(chatId)) {

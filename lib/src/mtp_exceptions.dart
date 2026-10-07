@@ -1,19 +1,23 @@
 part of 'mtp.dart';
 
-/// Raised when a bad message is sent to the server.
+/// Raised when Telegram rejects a message due to a sequencing or framing
+/// error. The [errorMessage] field translates Telegram's numeric error codes
+/// into human-readable descriptions.
+///
+/// This is an internal MTProto-level error, distinct from [RpcException]
+/// in `exceptions.dart`, which is the public-API-level error callers see.
 class BadMessageException implements Exception {
   const BadMessageException._(this.result);
 
-  /// Exception result.
   final BadMsgNotification result;
 
-  /// Get the readable error message.
+  /// Human-readable description of [result]'s numeric error code, as
+  /// documented in https://core.telegram.org/mtproto/service_messages_about_messages.
   String get errorMessage {
     final error = result.errorCode;
-
     switch (error) {
       case 16:
-        return 'msg_id too low (most likely, client time is wrong; it would be worthwhile to synchronize it using msg_id notifications and re-send the original message with the “correct” msg_id or wrap it in a container with a new msg_id if the original message had waited too long on the client to be transmitted)';
+        return 'msg_id too low (most likely, client time is wrong; it would be worthwhile to synchronize it using msg_id notifications and re-send the original message with the "correct" msg_id or wrap it in a container with a new msg_id if the original message had waited too long on the client to be transmitted)';
       case 17:
         return 'msg_id too high (similar to the previous case, the client time has to be synchronized, and the message re-sent with the correct msg_id)';
       case 18:
@@ -35,31 +39,26 @@ class BadMessageException implements Exception {
       case 64:
         return 'invalid container.';
     }
-
     return error.toString();
   }
 
   @override
-  String toString() {
-    final errorCode = result.errorCode;
-    return '$errorCode: $errorMessage';
-  }
+  String toString() => '${result.errorCode}: $errorMessage';
 }
 
-/// RPC Error.
+/// An RPC-level error returned by Telegram inside an encrypted frame.
+///
+/// This is the raw MTProto-layer type. [TelegramClient.callRaw] converts it
+/// into the public [PtgcException] hierarchy before it reaches callers.
 class RpcException {
   const RpcException._(this.errorCode, this.errorMessage);
 
-  /// Error Code.
-  ///
-  /// Field type is Int32.
+  /// Telegram's numeric error code (e.g. `400`, `403`, `420`).
   final int errorCode;
 
-  /// Error Message.
+  /// Telegram's raw error string (e.g. `'PEER_ID_INVALID'`, `'FLOOD_WAIT_30'`).
   final String errorMessage;
 
   @override
-  String toString() {
-    return '$errorCode: $errorMessage';
-  }
+  String toString() => '$errorCode: $errorMessage';
 }
